@@ -8,7 +8,8 @@ import Cookies from 'js-cookie'
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: process.env.NODE_ENV === 'production' ? process.env.VUE_APP_BASE_API : '/', // api 的 base_url
+  baseURL:
+    process.env.NODE_ENV === 'production' ? process.env.VUE_APP_BASE_API : '/', // api 的 base_url
   timeout: Config.timeout // 请求超时时间
 })
 
@@ -29,11 +30,15 @@ service.interceptors.request.use(
 // response 拦截器
 service.interceptors.response.use(
   response => {
-    return response.data
+    console.log(response.data)
+    return response.data.data
   },
   error => {
     // 兼容blob下载出错json提示
-    if (error.response.data instanceof Blob && error.response.data.type.toLowerCase().indexOf('json') !== -1) {
+    if (
+      error.response.data instanceof Blob &&
+      error.response.data.type.toLowerCase().indexOf('json') !== -1
+    ) {
       const reader = new FileReader()
       reader.readAsText(error.response.data, 'utf-8')
       reader.onload = function(e) {
